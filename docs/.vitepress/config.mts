@@ -1,13 +1,10 @@
 import { defineConfig } from 'vitepress'
 
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
 	lang: 'en-US',
-	title: "CaeriusOrm",
+	title: "Caerius.NET",
 	description: "The official CaeriusOrm documentation website",
 	themeConfig: {
-		// logo: '/logo.png',
-		// https://vitepress.dev/reference/default-theme-config
 		nav: [
 			{ text: 'Home', link: '/' },
 			{ text: 'Quickstart', link: '/quickstart/what-is-caeriusorm' },

@@ -130,6 +130,6 @@ dist
 .pnp.*
 
 ./docs/.vuepress/dist
-
+./docs/.vuepress/cache
 .idea
 ./.idea
