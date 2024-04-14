@@ -3,11 +3,12 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
 	lang: 'en-US',
 	title: "Caerius.NET",
-	description: "The official CaeriusOrm documentation website",
+	description: "The official Caerius.NET documentation website",
 	themeConfig: {
+		logo: 'logo-nobg-hd.png',
 		nav: [
 			{ text: 'Home', link: '/' },
-			{ text: 'Quickstart', link: '/quickstart/what-is-caeriusorm' },
+			{ text: 'Quickstart', link: '/quickstart/what-is-caeriusnet' },
 			{
 				text: 'Documentation',
 				items: [
@@ -22,7 +23,7 @@ export default defineConfig({
 			{
 				text: 'Quickstart Introduction',
 				items: [
-					{ text: 'What is CaeriusOrm', link: '/quickstart/what-is-caeriusorm' }
+					{ text: 'What is Caerius.NET', link: '/quickstart/what-is-caeriusnet' }
 				]
 			},
 			{
@@ -48,7 +49,7 @@ export default defineConfig({
 		},
 
 		footer: {
-			message: 'CaeriusOrm is a project by Johan (AriusII) Coureuil',
+			message: 'Caerius.NET is a project by Johan (AriusII) Coureuil',
 			copyright: 'Copyright © 2024'
 		}
 	}
