@@ -1,18 +1,17 @@
 ---
-# https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
 hero:
-  name: "CaeriusOrm"
+  name: "Caerius.NET"
   text: "C# & TSQL enchanced by performance Micro-ORM"
-  tagline: StoredProcedure to DTO in micro-seconds !
+  tagline: Stored Procedure to DTO in µseconds !
   image:
-    src: /logo.png
+    src: /logo-nobg-hd.png
     alt: VitePress
   actions:
     - theme: brand
-      text: What is CaeriusOrm?
-      link: /markdown-examples
+      text: What is Caerius.NET?
+      link: /quickstart/what-is-caeriusnet
       
     - theme: alt
       text: Quickstart
@@ -34,9 +33,9 @@ features:
 <style>
 :root {
   --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #fe6a34 30%, #c041ff);
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #8f00fd 30%, #6ae8f4);
 
-  --vp-home-hero-image-background-image: linear-gradient(-45deg, #165a10 50%, #47caff 50%);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #8f00fd 50%, #6ae8f4 50%);
   --vp-home-hero-image-filter: blur(44px);
 }
 
