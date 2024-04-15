@@ -12,9 +12,9 @@ export default defineConfig({
 			{
 				text: 'Documentation',
 				items: [
-					{ text: 'Installation', link: '/installation' },
-					{ text: 'Usage', link: '/usage' },
-					{ text: 'API', link: '/api' }
+					{ text: 'Getting Started', link: '/documentation/getting-started' },
+					{ text: 'Usage', link: '/documentation/usage' },
+					{ text: 'API', link: '/documentation/api' }
 				]
 			},
 		],
@@ -29,7 +29,7 @@ export default defineConfig({
 			{
 				text: 'Documentation',
 				items: [
-					{ text: 'Installation', link: '/documentation/installation' },
+					{ text: 'Getting Started', link: '/documentation/getting-started' },
 					{ text: 'Usage', link: '/documentation/usage' },
 					{ text: 'API', link: '/documentation/api' }
 				]
