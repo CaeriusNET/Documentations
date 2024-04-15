@@ -145,7 +145,7 @@ namespace TestProject.Models.Dtos;
 
 public sealed record UsersDto(int Id, string Name, byte Age)
     : ISpMapper<UsersDto>
-    
+{    
     public static UsersDto MapFromReader(SqlDataReader reader)
     {
         return new UsersDto

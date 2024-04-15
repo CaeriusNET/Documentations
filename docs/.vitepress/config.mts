@@ -5,7 +5,7 @@ export default defineConfig({
 	title: "Caerius.NET",
 	description: "The official Caerius.NET documentation website",
 	themeConfig: {
-		logo: 'logo-nobg-hd.png',
+		logo: 'logo.png',
 		nav: [
 			{ text: 'Home', link: '/' },
 			{ text: 'Quickstart', link: '/quickstart/what-is-caeriusnet' },
@@ -37,7 +37,7 @@ export default defineConfig({
 		],
 
 		socialLinks: [
-			{ icon: 'github', link: 'https://github.com/vuejs/vitepress' }
+			{ icon: 'github', link: 'https://github.com/CaeriusNET/CaeriusNet' }
 		],
 
 		lastUpdated: {
