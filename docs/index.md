@@ -15,7 +15,7 @@ hero:
       
     - theme: alt
       text: Quickstart
-      link: /quickstart/what-is-caeriusorm
+      link: /documentation/getting-started
       
     - theme: alt
       text: Github
@@ -23,11 +23,17 @@ hero:
 
 features:
   - icon: 🛠️
-    title: Focus on Your code
-    details: Create your `<i><b>Data Transfer Object</b></i>` (DTOs) from your Stored Procedures in a few lines of code.
+    title: Two codes, One goal
+    details: Make </br> your Stored Procedure in TSQL, </br> your Data Transfer Object in C#, </br> with your favorites tools.
   - icon: 🚀
-    title: Map fast your Objects
-    details: Map your DTOs to your objects in micro-seconds.
+    title: C# mapping in µseconds
+    details: Let Caerius.NET do the heavy lifting for you, and focus on your business logic.
+  - icon: 💪
+    title: Heavy sets of data
+    details: Caerius.NET is optimized for heavy sets of data, and will not slow down your application.</br>You don't trust us ?</br>We have plenty of benchmarks.
+  - icon: 🔄
+    title: Only Asynchronous
+    details: Cause we cannot know how long your Stored Procedure will take. We only provide asynchronous methods.
 ---
 
 <style>
