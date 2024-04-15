@@ -6,20 +6,18 @@ hero:
   text: "C# & TSQL enchanced by performance Micro-ORM"
   tagline: Stored Procedure to DTO in µseconds !
   image:
-    src: /logo-nobg-hd.png
-    alt: VitePress
+    src: /logo.png
+    alt: Caerius Logo
   actions:
     - theme: brand
       text: What is Caerius.NET?
       link: /quickstart/what-is-caeriusnet
-      
     - theme: alt
       text: Quickstart
       link: /documentation/getting-started
-      
     - theme: alt
       text: Github
-      link: https://github.com/vuejs/vitepress
+      link: https://github.com/CaeriusNET/CaeriusNet
 
 features:
   - icon: 🛠️

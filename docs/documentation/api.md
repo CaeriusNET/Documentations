@@ -1,8 +1,8 @@
 # API
 
-## Read API
+## Read
 
-## Write API
+## Write
 
 ## Stored Procedure Builder
 
