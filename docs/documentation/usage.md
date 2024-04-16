@@ -183,7 +183,7 @@ This help to map correctly the result of the Stored Procedure to the DTO.
 
 It's the following step after making the `Repository` class, [C# : Repository](#c-repository).
 
-On the exemple below, we will implement the `GetCustomUsersOlderThanAsync` method.
+On the example below, we will implement the `GetCustomUsersOlderThanAsync` method.
 
 ```csharp
 namespace TestProject.Repositories;
@@ -217,14 +217,18 @@ After that, you need to add the parameters of the Stored Procedure, with the nam
 
 ## Write Operations :
 
-The `Write` operations are the `INSERT INTO`, `DELETE`, `UPDATE`, `MERGE` operations.
+The `Write` operations are the `INSERT INTO`, `DELETE`, `UPDATE`, `MERGE` operations.  
+
+To implement the `UpdateCustomUserAgeByGuidAsync` method, we need to follow these steps :
+ - Start on the `TSQL` side, by creating a `Stored Procedure`.  
+ - Back to the `C#` side, by implementing the `UpdateCustomUserAgeByGuidAsync` with the usage of the `StoredProcedureParametersBuilder` class.
 
 
+## TSQL : Stored Procedure
 
+You need to create a Stored Procedure for the `INSERT`, `UPDATE` or `DELETE` operations, here we will see the `UPDATE` operation.  
 
-## TSQL : (Write) Stored Procedure
-
-You need to create a Stored Procedure for the `INSERT`, `UPDATE` or `DELETE` operations.
+For this specific example, we will update the `Age` of a user by his `Guid`, with the possibility to use multiple parameters.  
 
 ```sql
 CREATE PROCEDURE dbo.sp_UpdateCustomUserAge_By_Guid
@@ -238,12 +242,9 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION
         
-            UPDATE
-                dbo.Users
-            SET
-                Age = @Age
-            WHERE
-                Id = @Id
+            UPDATE dbo.Users
+            SET Age = @Age
+            WHERE Guid = @Guid
         
         IF @@TRANCOUNT > 0
             COMMIT TRANSACTION
@@ -255,17 +256,33 @@ BEGIN
 END
 ```
 
-Here, we have seen how to execute a `SELECT` query on a stored procedure, passing the `Age` parameter to the stored procedure `dbo.sp_GetCustomUsers_By_Age`.  
-This will do the mapping of the result of the stored procedure to the `CustomUsersDto` DTO, and return it as an `IEnumerable`.
-
 ## C# : Stored Procedure Builder
 
 It's the following step after making the `Repository` class, [4. C# : Repository](#_4-c-repository).
 
-On the exemple below, we will implement the `UpdateCustomUserAgeByGuidAsync` method.
+On the example below, we will implement the `UpdateCustomUserAgeByGuidAsync` method, based on the `Stored Procedure` we have created.  
 With this method we are required to define the `Guid` and the `Age` parameters.
+::: code-group
+```csharp [With Affected Rows]
+namespace TestProject.Repositories;
 
-```csharp
+public sealed record CustomUsersRepository(ICaeriusDbConnectionFactory Caerius)
+    : ICustomUsersRepository
+{
+
+    public async Task<int> UpdateCustomUserAgeByGuidAsync(Guid userGuid, byte userAge)
+    {
+        var spParams = new StoredProcedureParametersBuilder("dbo.sp_UpdateCustomUserAge_By_Guid")
+            .AddParameter("Guid", userGuid, SqlDbType.UniqueIdentifier)
+            .AddParameter("Age", userAge, SqlDbType.TinyInt);
+
+        var rows = await Caerius.ExecuteAsync(spParams);
+        
+        return rows;
+    }
+}
+```
+```csharp [Without Affected Rows]
 namespace TestProject.Repositories;
 
 public sealed record CustomUsersRepository(ICaeriusDbConnectionFactory Caerius)
@@ -278,8 +295,23 @@ public sealed record CustomUsersRepository(ICaeriusDbConnectionFactory Caerius)
             .AddParameter("Guid", userGuid, SqlDbType.UniqueIdentifier)
             .AddParameter("Age", userAge, SqlDbType.TinyInt);
 
-        await Caerius.ExecuteAsync(spParams);
+        return await Caerius.ExecuteScalarAsync(spParams);
     }
 }
 ```
+
+### Explanations
+
+To explain the `ExecuteAsync` and `ExecuteScalarAsync` methods, they are used to execute the Stored Procedure, as `Fire and Forget`.
+ - `ExecuteAsync` is used for `INSERT INTO`, `DELETE`, `UPDATE`, `MERGE` operations,  
+and _**will not**_ return the number of rows affected by the operation.
+
+ - `ExecuteScalarAsync` is used for `INSERT INTO`, `DELETE`, `UPDATE`, `MERGE` operations,  
+and _**will**_ return the number of rows affected by the operation.  
+
+**Note** : You don't have to specify the `List Capacity` for the `ExecuteAsync` and `ExecuteScalarAsync` methods, because they are not returning a `List<T>`.
+
+
+
+
 

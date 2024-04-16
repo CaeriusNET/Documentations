@@ -14,6 +14,7 @@ export default defineConfig({
 				items: [
 					{ text: 'Getting Started', link: '/documentation/getting-started' },
 					{ text: 'Usage', link: '/documentation/usage' },
+					{ text: 'Advanced Usage', link: '/documentation/advanced-usage' },
 					{ text: 'API', link: '/documentation/api' }
 				]
 			},
@@ -31,6 +32,7 @@ export default defineConfig({
 				items: [
 					{ text: 'Getting Started', link: '/documentation/getting-started' },
 					{ text: 'Usage', link: '/documentation/usage' },
+					{ text: 'Advanced Usage', link: '/documentation/advanced-usage' },
 					{ text: 'API', link: '/documentation/api' }
 				]
 			}
