@@ -1,49 +1,47 @@
 # Usages
 
-On this page, we will see how to use Caerius.NET in your project, with different examples.  
+This page demonstrates how to leverage Caerius.NET in your projects with various examples.
 
-Cause every project is different, we take the part where the lector is attentive with the best practices, and have some good knowledge of C# and TSQL.
+Given the unique nature of each project, this guide assumes readers are well-versed in best practices and possess solid knowledge of C# and TSQL.
 
-For C# :
- - Knowledge about C# 12 and .NET 8 is required.  
- - Knowledge about `Good Practices`, `Clean Code`, `SOLID Principles`, `Repository Pattern`, `Dependency Injection` is recommended.  
- - Knowledge about `Records` and `Sealed Classes` is recommended.  
+### For C#:
+- Proficiency in C# 12 and .NET 8 is required.
+- Familiarity with `Best Practices`, `Clean Code`, `SOLID Principles`, `Repository Pattern`, and `Dependency Injection` is recommended.
+- Understanding of `sealed class` and `record` types is also recommended.
 
-  
-For TSQL :  
-- Knowledge about TSQL is required.  
-- Knowledge about `Stored Procedures` is required.  
-- Knowledge about `Transactions` is recommended.  
-- For advanced usage, knowledge about `Table-Valued Parameters` is recommended.
+### For TSQL:
+- A strong foundation in TSQL is essential.
+- Knowledge of `Stored Procedures` is mandatory.
+- Familiarity with `Transactions` is advised.
+- For advanced usage, understanding of `Table-Valued Parameters` is beneficial.
 
-## C# : Repository
-On your C# application, you should have specified class to handle the database operations.  
-In clean code architecture, it's named an `Repositories` folder, who list each `Repository` class that will handle the database operations, attached to an `Interface`.
+## C#: Repository
+In your C# application, specific classes should manage database operations. Typically, these reside in a `Repositories` directory, listing each `Repository` class responsible for database interactions, each paired with an `Interface`.
 
-Let's take a look at this `Interface` and `Record` example :  
+Below is an example of an `Interface` and a `Record`:
 
 ::: code-group
 ```csharp [Interface (Mandatory)]
 namespace TestProject.Repositories.Interfaces;
 
-public interface ICustomUsersRepository
+public interface IUserRepository
 {
-    Task<IEnumerable<CustomUsersDto>> GetCustomUsersOlderThanAsync(byte age);
-    Task UpdateCustomUserAgeByGuidAsync(Guid guid, byte age);
+    Task<IEnumerable<UserDto>> GetUserOlderThanAsync(byte age);
+    Task UpdateUserAgeByGuidAsync(Guid guid, byte age);
 }
 ```
 ```csharp [Class]
 namespace TestProject.Repositories;
 
-public sealed class CustomUsersRepository(ICaeriusDbConnectionFactory Caerius)
-    : ICustomUsersRepository
+public sealed class UserRepository(ICaeriusDbConnectionFactory Caerius)
+    : IUserRepository
 {
-    public async Task<IEnumerable<CustomUsersDto>> GetCustomUsersOlderThanAsync(byte age)
+    public async Task<IEnumerable<UserDto>> GetUserOlderThanAsync(byte age)
     {
         throw new NotImplementedException();
     }
 
-    public async Task UpdateCustomUserAgeByGuidAsync(Guid guid, byte age)
+    public async Task UpdateUserAgeByGuidAsync(Guid guid, byte age)
     {
         throw new NotImplementedException();
     }
@@ -52,10 +50,10 @@ public sealed class CustomUsersRepository(ICaeriusDbConnectionFactory Caerius)
 ```csharp [Record (Recommended)]
 namespace TestProject.Repositories;
 
-public sealed record CustomUsersRepository(ICaeriusDbConnectionFactory Caerius)
-    : ICustomUsersRepository
+public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
+    : IUserRepository
 {
-    public async Task<IEnumerable<CustomUsersDto>> GetCustomUsersOlderThanAsync(byte age)
+    public async Task<IEnumerable<UserDto>> GetUserOlderThanAsync(byte age)
     {
         throw new NotImplementedException();
     }
@@ -70,26 +68,25 @@ public sealed record CustomUsersRepository(ICaeriusDbConnectionFactory Caerius)
 
 We basically have an `Interface` that defines the methods that will be implemented in the `Repository` class.
  - One for the `Read` (`SELECT`) operations.
- - One for the `Write` (`INSERT INTO`, `DELETE`, `UPDATE`) operations.
+ - One for the `Write` (`INSERT INTO`, `DELETE`, `UPDATE`, `MERGE`) operations.
 
-In the below section, we will see how to implement the `Read` and `Write` operations.  
+In the below section, we will see how to implement the [`Read`](#read-operations) and [`Write`](#write-operations) operations.  
 
 ## Read Operations :
 
 The `Read` operations are the `SELECT` operations.  
-To implement the `GetCustomUsersOlderThanAsync` method, we need to follow these steps :
+To implement the `GetUserOlderThanAsync` method, we need to follow these steps :
  - Start on the `TSQL` side, by creating a `Stored Procedure`.  
  - Turn to the `C#` side, by creating the C# DTO Mapping.  
- - Continue with C# by implementing the `GetCustomUsersOlderThanAsync` with the usage of the `StoredProcedureParametersBuilder` class.  
+ - Continue with C# by implementing the `GetUserOlderThanAsync` with the usage of the `StoredProcedureParametersBuilder` class.  
 
 ## TSQL : Stored Procedure
 
-You need to create a Stored Procedure that will return the same columns as your DTO.
-
-To make it possible, you need to use the `SELECT` statement with the same column names as your DTO properties, you can use aliases to match the column names.
+To make it possible, you need to use the `SELECT` statement and make it match the column names of your DTO properties.   
+For this you can use aliases (`AS`) to match them.
 
 ```sql
-CREATE PROCEDURE dbo.sp_GetCustomUsers_By_Age
+CREATE PROCEDURE dbo.sp_GetUser_By_Age
     @Age TINYINT = 18
 AS
 BEGIN
@@ -127,8 +124,9 @@ To explain this Stored Procedure example, we are using aliases to match the colu
 For people who are surprised by the absence of `AS` keyword, it's optional in TSQL.  
 In any case, those usages are working the same way, chosen one that you prefer.
 
-Cautious, here we use the default schema `dbo`, it's highly recommended to use your own schema for your Stored Procedures.  
-
+::: tip
+We're using the default schema (`dbo`) on this example, it's highly recommended to use your own schema for your Stored Procedures usage.  
+:::
 ## C# : DTO Mapping
 
 We heavy recommend to use [`sealed`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/sealed) [`records`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record) for your DTOs.  
@@ -145,7 +143,7 @@ You need to use the `ISpMapper<T>` interface to map the result of your Stored Pr
 ```csharp
 namespace TestProject.Models.Dtos;
 
-public sealed record CustomUsersDto(
+public sealed record UserDto(
     Guid Guid,
     int Id,
     string Username,
@@ -154,9 +152,9 @@ public sealed record CustomUsersDto(
     ushort Points)
     : ISpMapper<CustomUsersDto>
 {
-    public static CustomUsersDto MapFromReader(SqlDataReader reader)
+    public static UserDto MapFromReader(SqlDataReader reader)
     {
-        return new CustomUsersDto(
+        return new UserDto(
             Guid = reader.GetGuid(0),
             Id = reader.GetInt32(1),
             Username = reader.GetString(2),
@@ -183,20 +181,20 @@ This help to map correctly the result of the Stored Procedure to the DTO.
 
 It's the following step after making the `Repository` class, [C# : Repository](#c-repository).
 
-On the example below, we will implement the `GetCustomUsersOlderThanAsync` method.
+On the example below, we will implement the `GetUserOlderThanAsync` method.
 
 ```csharp
 namespace TestProject.Repositories;
 
-public sealed record CustomUsersRepository(ICaeriusDbConnectionFactory Caerius)
-    : ICustomUsersRepository
+public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
+    : IUserRepository
 {
-    public async Task<IEnumerable<CustomUsersDto>> GetCustomUsersOlderThanAsync(byte userAge)
+    public async Task<IEnumerable<UserDto>> GetUserOlderThanAsync(byte userAge)
     {
-        var spParams = new StoredProcedureParametersBuilder("dbo.sp_GetCustomUsers_By_Age", 450)
+        var spParams = new StoredProcedureParametersBuilder("dbo.sp_GetUser_By_Age", 450)
             .AddParameter("Age", userAge, SqlDbType.TinyInt);
 
-        var users = await Caerius.QueryAsync<CustomUsersDto>(spParams);
+        var users = await Caerius.QueryAsync<UserDto>(spParams);
 
         return users;
     }
@@ -219,19 +217,19 @@ After that, you need to add the parameters of the Stored Procedure, with the nam
 
 The `Write` operations are the `INSERT INTO`, `DELETE`, `UPDATE`, `MERGE` operations.  
 
-To implement the `UpdateCustomUserAgeByGuidAsync` method, we need to follow these steps :
+To implement the `UpdateUserAgeByGuidAsync` method, we need to follow these steps :
  - Start on the `TSQL` side, by creating a `Stored Procedure`.  
- - Back to the `C#` side, by implementing the `UpdateCustomUserAgeByGuidAsync` with the usage of the `StoredProcedureParametersBuilder` class.
+ - Back to the `C#` side, by implementing the `UpdateUserAgeByGuidAsync` with the usage of the `StoredProcedureParametersBuilder` class.
 
 
 ## TSQL : Stored Procedure
 
-You need to create a Stored Procedure for the `INSERT`, `UPDATE` or `DELETE` operations, here we will see the `UPDATE` operation.  
+You need to create a Stored Procedure for the `INSERT`, `UPDATE`, `DELETE` or `MERGE` operations, here we will see the `UPDATE` operation.  
 
 For this specific example, we will update the `Age` of a user by his `Guid`, with the possibility to use multiple parameters.  
 
 ```sql
-CREATE PROCEDURE dbo.sp_UpdateCustomUserAge_By_Guid
+CREATE PROCEDURE dbo.sp_UpdateUserAge_By_Guid
     @Guid UNIQUEIDENTIFIER,
     @Age TINYINT
 AS
@@ -260,17 +258,17 @@ END
 
 It's the following step after making the `Repository` class, [4. C# : Repository](#_4-c-repository).
 
-On the example below, we will implement the `UpdateCustomUserAgeByGuidAsync` method, based on the `Stored Procedure` we have created.  
+On the example below, we will implement the `UpdateUserAgeByGuidAsync` method, based on the `Stored Procedure` we have created.  
 With this method we are required to define the `Guid` and the `Age` parameters.
 ::: code-group
 ```csharp [With Affected Rows]
 namespace TestProject.Repositories;
 
-public sealed record CustomUsersRepository(ICaeriusDbConnectionFactory Caerius)
-    : ICustomUsersRepository
+public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
+    : IUserRepository
 {
 
-    public async Task<int> UpdateCustomUserAgeByGuidAsync(Guid userGuid, byte userAge)
+    public async Task<int> UpdateUserAgeByGuidAsync(Guid userGuid, byte userAge)
     {
         var spParams = new StoredProcedureParametersBuilder("dbo.sp_UpdateCustomUserAge_By_Guid")
             .AddParameter("Guid", userGuid, SqlDbType.UniqueIdentifier)
@@ -285,11 +283,11 @@ public sealed record CustomUsersRepository(ICaeriusDbConnectionFactory Caerius)
 ```csharp [Without Affected Rows]
 namespace TestProject.Repositories;
 
-public sealed record CustomUsersRepository(ICaeriusDbConnectionFactory Caerius)
-    : ICustomUsersRepository
+public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
+    : IUserRepository
 {
 
-    public async Task UpdateCustomUserAgeByGuidAsync(Guid userGuid, byte userAge)
+    public async Task UpdateUserAgeByGuidAsync(Guid userGuid, byte userAge)
     {
         var spParams = new StoredProcedureParametersBuilder("dbo.sp_UpdateCustomUserAge_By_Guid")
             .AddParameter("Guid", userGuid, SqlDbType.UniqueIdentifier)
