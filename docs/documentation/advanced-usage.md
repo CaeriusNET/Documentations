@@ -1,7 +1,6 @@
 # Advanced Usage
 
 On this page, we will cover some advanced usage of the `Caerius.NET` library.  
- - [Using Table-Valued Parameters](#table-valued-parameters)
 
 ## Table-Valued Parameters
 
@@ -14,8 +13,7 @@ This was possible with the [`DataTable`](https://learn.microsoft.com/en-us/dotne
 ::: tip
 The main profit of using TVP is to send a HEAVY set of data to the database in one call, like a big list of (Ids, Guid, ...), instead of sending each row one by one.
 :::
-
-## How to use TVP with Caerius.NET
+## How to use TVP
 
 To use TVP with `Caerius.NET`, you need to create on your database a new type of table, like this:
 
@@ -46,7 +44,7 @@ And finally, in your C# code, you need to do two things:
 
 Here is an example:
 ::: code-group
-```csharp [TVP creation]
+```csharp [TVP]
 namespace TestProject.Models.Tvps;
 
 public sealed record UsersIdsTvp(int Id)
@@ -68,12 +66,12 @@ using CaeriusNET.Models.Tvps;
 
 namespace TestProject.Services;
 
-public sealed record UsersService(ICustomUsersRepository CustomUsersRepository)
-    : IUsersService
+public sealed record UserService(IUserRepository UserRepository)
+    : IUserService
 {
     private readonly Random _random = new();
 
-    public async Task<IEnumerable<CustomUsersDto>> GetUsersByTvpIds(IEnumerable<UsersDto> users)
+    public async Task<IEnumerable<UserDto>> GetUsersByTvpIds(IEnumerable<UserDto> users)
     {
         var usersToGet = users
             .Take(4242)
@@ -91,17 +89,65 @@ using CaeriusNET.Models.Tvps;
 
 namespace TestProject.Repositories;
 
-public sealed record CustomUsersRepository(ICaeriusDbConnectionFactory Caerius)
-    : ICustomUsersRepository
+public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
+    : IUserRepository
 {
-    public async Task<IEnumerable<CustomUsersDto>> GetUsersByTvpIds(IEnumerable<UsersIdsTvp> users)
+    public async Task<IEnumerable<UserDto>> GetUsersByTvpIds(IEnumerable<UsersIdsTvp> users)
     {
         var parameters = new StoredProcedureParametersBuilder("dbo.sp_GetUsers_By_Tvp_Ids", 4242);
             .AddTableValuedParameter("Ids", "dbo.tvp_int", users);
 
-        var users = await Caerius.QueryAsync<CustomUsersDto>("dbo.sp_GetUsers_By_Tvp_Ids", parameters);
+        var users = await Caerius.QueryAsync<UserDto>("dbo.sp_GetUsers_By_Tvp_Ids", parameters);
         
         return users;
     }
 }
 ```
+:::
+## Multiples parameters
+
+Sometimes you need to use Stored Procedures parameters and TVP in the same call.
+
+To do this, you can use the `.AddStoredProcedureParameter()` with `.AddTableValuedParameter()` method of the `StoredProcedureParametersBuilder` class.
+
+Here is an example:
+
+::: code-group
+```csharp [Repository]
+using CaeriusNET.Models.Tvps;
+
+namespace TestProject.Repositories;
+
+public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
+    : IUserRepository
+{
+    public async Task<IEnumerable<UserDto>> GetUsersByTvpIdsAndAge(IEnumerable<UsersIdsTvp> users, int age)
+    {
+        var parameters = new StoredProcedureParametersBuilder("dbo.sp_GetUsers_By_Tvp_Ids_And_Age", 4242)
+            .AddTableValuedParameter("Ids", "dbo.tvp_int", users)
+            .AddStoredProcedureParameter("Age", age, SqlDbType.Int);
+
+        var users = await Caerius.QueryAsync<UserDto>("dbo.sp_GetUsers_By_Tvp_Ids_And_Age", parameters);
+        
+        return users;
+    }
+}
+```
+```sql [Stored Procedure]
+CREATE PROCEDURE dbo.sp_GetUsers_By_Tvp_Ids_And_Age
+    @Ids dbo.tvp_int READONLY,
+    @Age int
+AS
+BEGIN
+    SELECT Id, Username, Points
+    FROM dbo.Users
+    WHERE Id 
+        IN (SELECT Id FROM @Ids)
+    AND Age = @Age
+END
+```
+:::
+
+### Conclusion
+
+In this page, we covered the advanced usage of the `Caerius.NET` library. We learned how to use Table-Valued Parameters and how to use them with other parameters in the same call.

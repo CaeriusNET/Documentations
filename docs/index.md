@@ -25,7 +25,7 @@ features:
     details: Make </br> your Stored Procedure in TSQL, </br> your Data Transfer Object in C#, </br> with your favorites tools.
   - icon: 🚀
     title: C# mapping in µseconds
-    details: Let Caerius.NET do the heavy lifting for you, and focus on your business logic.
+    details: Let us do the heavy lifting for you, and focus on your business logic.
   - icon: 💪
     title: Heavy sets of data
     details: Caerius.NET is optimized for heavy sets of data, and will not slow down your application.</br>You don't trust us ?</br>We have plenty of benchmarks.

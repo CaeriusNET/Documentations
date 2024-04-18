@@ -3,7 +3,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
 	lang: 'en-US',
 	title: "Caerius.NET",
-	description: "The official Caerius.NET documentation website",
+	description: "The official Caerius.NET library documentation website",
 	themeConfig: {
 		logo: 'logo.png',
 		nav: [
@@ -12,7 +12,6 @@ export default defineConfig({
 			{
 				text: 'Documentation',
 				items: [
-					{ text: 'Getting Started', link: '/documentation/getting-started' },
 					{ text: 'Usage', link: '/documentation/usage' },
 					{ text: 'Advanced Usage', link: '/documentation/advanced-usage' },
 					{ text: 'API', link: '/documentation/api' }
@@ -24,13 +23,14 @@ export default defineConfig({
 			{
 				text: 'Quickstart Introduction',
 				items: [
-					{ text: 'What is Caerius.NET', link: '/quickstart/what-is-caeriusnet' }
+					{ text: 'What is Caerius.NET', link: '/quickstart/what-is-caeriusnet' },
+					{ text: 'Getting Started', link: '/quickstart/getting-started' }
 				]
 			},
 			{
 				text: 'Documentation',
 				items: [
-					{ text: 'Getting Started', link: '/documentation/getting-started' },
+
 					{ text: 'Usage', link: '/documentation/usage' },
 					{ text: 'Advanced Usage', link: '/documentation/advanced-usage' },
 					{ text: 'API', link: '/documentation/api' }

@@ -1,21 +1,21 @@
-# What is Caerius.NET ?
+# What is Caerius.NET?
 
-Caerius.NET is a `C# 12 .NET 8` library that allows you to map the results of a TSQL Stored Procedure to a C# Data Transfer Object (DTO) in a few microseconds.  
-Cause we love C#, ADO.NET and TSQL, we wanted to make it easier for you to use them together.  
-We only support C# and SQL Server, and we are proud of it.
+Caerius.NET is a `C# 12 .NET 8` `NuGet Package` library designed to swiftly map the results of TSQL Stored Procedures to C# Data Transfer Objects (DTOs).  
+Our passion for C#, ADO.NET, and TSQL drove us to simplify their integration.  
+Currently, we exclusively support C# and SQL Server—and we take pride in this specialization.
 
-## Why Caerius.NET ?
+## Why Caerius.NET?
 ### Simplicity
-Caerius.NET is designed to be simple to use. We want to make it as easy as possible for you.
+Caerius.NET boasts a user-friendly design. We strive to make your development experience as straightforward as possible.
 
 ### Flexibility
-We know that every project is different, and we want to make it as easy as possible for you to use Caerius.NET in your project. We support a wide range of data types, and we are always adding new features to make it easier for you to use Caerius.NET in your project. Like the ability to use TVP (Table-Valued Parameters) in your Stored Procedure request.
+Recognizing the uniqueness of each project, we continuously enhance Caerius.NET to support a diverse range of data types. We're committed to extending its functionality, such as enabling Table-Valued Parameters (TVPs) for your Stored Procedures, to adapt to your specific project needs.
 
 ### Reliability
-We know that you need to be able to rely on your applications, and we want to make it as easy as possible for you to use Caerius.NET in your project. We have extensive unit tests to ensure that Caerius.NET is reliable, and we are always adding new features to make it easier for you to use Caerius.NET in your project.
+Your applications' reliability is our priority. Caerius.NET is underpinned by comprehensive unit testing to ensure its dependability. We are committed to continuously expanding its features to integrate seamlessly into your projects.
 
 ### Performance
-We are sensitive to the performance of our applications, and we know that the mapping of a result set can be a bottleneck. Caerius.NET is optimized for performance, and we have benchmarks to prove it.
+We understand that performance is critical, especially when result set mapping could become a bottleneck. Caerius.NET is performance-optimized, with benchmarks to substantiate its efficiency.
 
-## I want to try it ! How does it work ?
-Make a view on your [Getting Started](https://caerius.net/documentation/getting-started.html) page, and let's see how to use Caerius.NET in your project.
+## Interested in trying it out? How does it work?
+Visit our [Getting Started](https://caerius.net/quickstart/getting-started.html) page to learn how to integrate Caerius.NET into your project.
