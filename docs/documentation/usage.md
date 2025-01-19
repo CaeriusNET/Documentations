@@ -33,7 +33,7 @@ public interface IUserRepository
 ```csharp [Class]
 namespace TestProject.Repositories;
 
-public sealed class UserRepository(ICaeriusDbConnectionFactory Caerius)
+public sealed class UserRepository(ICaeriusDbContext DbContext)
     : IUserRepository
 {
     public async Task<IEnumerable<UserDto>> GetUserOlderThanAsync(byte age)
@@ -50,7 +50,7 @@ public sealed class UserRepository(ICaeriusDbConnectionFactory Caerius)
 ```csharp [Record (Recommended)]
 namespace TestProject.Repositories;
 
-public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
+public sealed record UserRepository(ICaeriusDbContext DbContext)
     : IUserRepository
 {
     public async Task<IEnumerable<UserDto>> GetUserOlderThanAsync(byte age)
@@ -186,15 +186,16 @@ On the example below, we will implement the `GetUserOlderThanAsync` method.
 ```csharp
 namespace TestProject.Repositories;
 
-public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
+public sealed record UserRepository(ICaeriusDbContext DbContext)
     : IUserRepository
 {
     public async Task<IEnumerable<UserDto>> GetUserOlderThanAsync(byte userAge)
     {
         var spParams = new StoredProcedureParametersBuilder("dbo.sp_GetUser_By_Age", 450)
-            .AddParameter("Age", userAge, SqlDbType.TinyInt);
+            .AddParameter("Age", userAge, SqlDbType.TinyInt)
+            .Build();
 
-        var users = await Caerius.QueryAsync<UserDto>(spParams);
+        var users = await DbContext.FirstQueryAsync<UserDto>(spParams);
 
         return users;
     }
@@ -264,7 +265,7 @@ With this method we are required to define the `Guid` and the `Age` parameters.
 ```csharp [With Affected Rows]
 namespace TestProject.Repositories;
 
-public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
+public sealed record UserRepository(ICaeriusDbContext DbContext)
     : IUserRepository
 {
 
@@ -272,9 +273,10 @@ public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
     {
         var spParams = new StoredProcedureParametersBuilder("dbo.sp_UpdateCustomUserAge_By_Guid")
             .AddParameter("Guid", userGuid, SqlDbType.UniqueIdentifier)
-            .AddParameter("Age", userAge, SqlDbType.TinyInt);
+            .AddParameter("Age", userAge, SqlDbType.TinyInt)
+            .Build();
 
-        var rows = await Caerius.ExecuteAsync(spParams);
+        var rows = await DbContext.ExecuteAsync(spParams);
         
         return rows;
     }
@@ -283,7 +285,7 @@ public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
 ```csharp [Without Affected Rows]
 namespace TestProject.Repositories;
 
-public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
+public sealed record UserRepository(ICaeriusDbContext DbContext)
     : IUserRepository
 {
 
@@ -291,9 +293,10 @@ public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
     {
         var spParams = new StoredProcedureParametersBuilder("dbo.sp_UpdateCustomUserAge_By_Guid")
             .AddParameter("Guid", userGuid, SqlDbType.UniqueIdentifier)
-            .AddParameter("Age", userAge, SqlDbType.TinyInt);
+            .AddParameter("Age", userAge, SqlDbType.TinyInt)
+            .Build();
 
-        return await Caerius.ExecuteScalarAsync(spParams);
+        return await DbContext.ExecuteScalarAsync(spParams);
     }
 }
 ```

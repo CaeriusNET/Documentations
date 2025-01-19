@@ -89,15 +89,16 @@ using CaeriusNET.Models.Tvps;
 
 namespace TestProject.Repositories;
 
-public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
+public sealed record UserRepository(ICaeriusDbContext DbContext)
     : IUserRepository
 {
     public async Task<IEnumerable<UserDto>> GetUsersByTvpIds(IEnumerable<UsersIdsTvp> users)
     {
         var parameters = new StoredProcedureParametersBuilder("dbo.sp_GetUsers_By_Tvp_Ids", 4242);
-            .AddTableValuedParameter("Ids", "dbo.tvp_int", users);
+            .AddTableValuedParameter("Ids", "dbo.tvp_int", users)
+            .Build();
 
-        var users = await Caerius.QueryAsync<UserDto>("dbo.sp_GetUsers_By_Tvp_Ids", parameters);
+        var users = await DbContext.QueryAsync<UserDto>("dbo.sp_GetUsers_By_Tvp_Ids", parameters);
         
         return users;
     }
@@ -118,16 +119,17 @@ using CaeriusNET.Models.Tvps;
 
 namespace TestProject.Repositories;
 
-public sealed record UserRepository(ICaeriusDbConnectionFactory Caerius)
+public sealed record UserRepository(ICaeriusDbContext DbContext)
     : IUserRepository
 {
     public async Task<IEnumerable<UserDto>> GetUsersByTvpIdsAndAge(IEnumerable<UsersIdsTvp> users, int age)
     {
         var parameters = new StoredProcedureParametersBuilder("dbo.sp_GetUsers_By_Tvp_Ids_And_Age", 4242)
             .AddTableValuedParameter("Ids", "dbo.tvp_int", users)
-            .AddStoredProcedureParameter("Age", age, SqlDbType.Int);
+            .AddStoredProcedureParameter("Age", age, SqlDbType.Int)
+            .Build()
 
-        var users = await Caerius.QueryAsync<UserDto>("dbo.sp_GetUsers_By_Tvp_Ids_And_Age", parameters);
+        var users = await DbContext.FirstQueryAsync<UserDto>("dbo.sp_GetUsers_By_Tvp_Ids_And_Age", parameters);
         
         return users;
     }

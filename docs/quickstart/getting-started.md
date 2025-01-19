@@ -23,8 +23,8 @@ Add the following entries to your `appsettings.json` file:
 ```json
 {
   "ConnectionStrings": {
-    "Default": "Server=localhost,1433;Database=sandbox;User Id=sa;Password=HashedPassword!;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;", // [!code focus]
-    "Template": "Server=<>;Database=<>;User Id=<>;Password=<>;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;" // [!code focus]
+    "Default": "Server=localhost,1433;Database=sandbox;User Id=sa;Password=HashedPassword!;Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt=True;", // [!code focus]
+    "Template": "Server=<>;Database=<>;User Id=<>;Password=<>;Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt=True;" // [!code focus]
   }
 }
 ```
@@ -36,7 +36,7 @@ Replace placeholders (<>) with actual values.
 
 Visit https://www.connectionstrings.com/sql-server/ to generate a connection string specific to your SQL Server setup.  
 
-The parameters `Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;` are crucial for proper connection functionality due to `Microsoft.Data.SqlClient` requirements.
+The parameters `Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt=True;` are crucial for proper connection functionality due to `Microsoft.Data.SqlClient` requirements.
 :::
 This step requires the `Microsoft.Extensions.Configuration.Json` package to read the configuration settings from the `appsettings.json` file.
 
@@ -60,7 +60,7 @@ services.AddSingleton<IConfiguration>(configuration);
 var connectionString = configuration.GetConnectionString("Default");
 
 services // [!code focus]
-    .RegisterCaeriusNet(connectionString); // [!code focus]
+    .AddCaeriusNet(connectionString); // [!code focus]
     // ... additional DI configuration // [!code --]
 
 var serviceProvider = services.BuildServiceProvider();
@@ -83,7 +83,7 @@ public interface ITestRepository
 ```csharp [Class]
 namespace TestProject.Repositories;
 
-public sealed class TestRepository(ICaeriusDbConnectionFactory Caerius)
+public sealed class TestRepository(ICaeriusDbContext DbContext)
     : ITestRepository
 {
     public async Task<IEnumerable<UserDto>> GetUsersOlderThanAsync(int usersAge)
@@ -92,7 +92,7 @@ public sealed class TestRepository(ICaeriusDbConnectionFactory Caerius)
             .AddParameter("Age", usersAge, SqlDbType.Int)
             .Build();
 
-        var users = await Caerius.QueryAsync<UserDto>(spParams);
+        var users = await DbContext.FirstQueryAsync<UserDto>(spParams);
 
         return users;
     }
@@ -101,7 +101,7 @@ public sealed class TestRepository(ICaeriusDbConnectionFactory Caerius)
 ```csharp [Record (Recommended)]
 namespace TestProject.Repositories;
 
-public sealed record TestRepository(ICaeriusDbConnectionFactory Caerius)
+public sealed record TestRepository(ICaeriusDbContext DbContext)
     : ITestRepository
 {
     public async Task<IEnumerable<UserDto>> GetUsersOlderThanAsync(int usersAge)
@@ -110,7 +110,7 @@ public sealed record TestRepository(ICaeriusDbConnectionFactory Caerius)
             .AddParameter("Age", usersAge, SqlDbType.Int)
             .Build();
 
-        var users = await Caerius.QueryAsync<UserDto>(spParams);
+        var users = await DbContext.FirstQueryAsync<UserDto>(spParams);
 
         return users;
     }
